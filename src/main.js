@@ -4,7 +4,8 @@ import { createStore } from 'vuex'
 
 import App from './App.vue';
 
-const store = createStore({
+const counterModule = {
+    namespaced: true,
     state() {
         return {
             counter: 0,
@@ -15,8 +16,9 @@ const store = createStore({
             state.counter = state.counter + 2;
         },
         increase(state, payload) {
+            console.log(state)
             state.counter = state.counter + payload.value;
-        }
+        },
     },
     actions: {
         increment(context) {
@@ -26,9 +28,9 @@ const store = createStore({
             }, 2000);
         },
         increase(context, payload) {
-            console.log(context)
+            // console.log(context)
             context.commit('increase', payload)
-        }
+        },
     },
     getters: {
         finalCounter(state) {
@@ -42,6 +44,36 @@ const store = createStore({
                 return 100;
             }
             return fanalCounter;
+        },
+    },
+
+}
+
+const store = createStore({
+    modules: {
+        numbers: counterModule,
+    },
+    state() {
+        return {
+            isLoggedIn: false,
+        }
+    },
+    mutations: {
+        setAuth(state, payload) {
+            state.isLoggedIn = payload.isAuth;
+        }
+    },
+    actions: {
+        login(context) {
+            context.commit('setAuth', { isAuth: true })
+        },
+        logout(context) {
+            context.commit('setAuth', { isAuth: false })
+        },
+    },
+    getters: {
+        userIsAuthenticated(state) {
+            return state.isLoggedIn;
         }
     }
 
